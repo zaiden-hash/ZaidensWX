@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — Rensselaer County Weather</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html" style="text-decoration:none;">
+      <div class="brand-mark">RC</div>
+      <div class="brand-text">
+        <div class="name">Rensselaer County Weather</div>
+        <div class="tag">ADMIN PANEL</div>
+      </div>
+    </a>
+    <nav class="main">
+      <a href="index.html">Back to site</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Login gate -->
+<div class="panel admin-login" id="login-panel">
+  <h2 style="margin-bottom:16px;">Sign In</h2>
+  <div class="field">
+    <label for="password">Admin Password</label>
+    <input type="password" id="password" autocomplete="current-password">
+  </div>
+  <button id="login-btn">Sign In</button>
+  <div class="form-msg err" id="login-msg"></div>
+</div>
+
+<!-- Editor (hidden until authenticated) -->
+<main class="admin-shell" id="editor" style="display:none;">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">Admin</div>
+      <h1>Publish Forecast Content</h1>
+    </div>
+    <button class="secondary" id="logout-btn">Sign Out</button>
+  </div>
+
+  <div class="panel" style="padding:22px; margin-bottom:20px;">
+    <div class="field">
+      <label for="discussion-input">Area Forecast Discussion</label>
+      <textarea id="discussion-input" placeholder="Write today's forecast discussion..."></textarea>
+    </div>
+    <div class="field">
+      <label for="today-input">Today's Forecast (short summary shown on homepage)</label>
+      <textarea id="today-input" style="min-height:80px;" placeholder="e.g. Partly sunny, high near 74. Northwest winds 5-10 mph."></textarea>
+    </div>
+  </div>
+
+  <div class="panel" style="padding:22px; margin-bottom:20px;">
+    <div class="section-head" style="margin-bottom:12px;">
+      <h3>7-Day Outlook</h3>
+      <button class="secondary" id="add-day-btn" type="button">+ Add Day</button>
+    </div>
+    <div id="week-rows"></div>
+  </div>
+
+  <button id="save-btn">Publish Update</button>
+  <div class="form-msg" id="save-msg"></div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

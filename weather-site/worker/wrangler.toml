@@ -1,0 +1,12 @@
+name = "weather-site-api"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+# After running `wrangler kv namespace create CONTENT`, paste the
+# printed id below.
+kv_namespaces = [
+  { binding = "CONTENT", id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID" }
+]
+
+# Do NOT put ADMIN_PASSWORD here. Set it as a secret instead:
+#   wrangler secret put ADMIN_PASSWORD

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rensselaer County Weather — Current Conditions & Forecast</title>
+<meta name="description" content="Local weather conditions, forecast discussion, and warnings for Rensselaer County, NY.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="status-strip">
+  <div class="wrap">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span id="clock-local">--:--:-- LOCAL</span>
+    <span class="sep">|</span>
+    <span id="clock-utc">--:--Z</span>
+    <span class="sep">|</span>
+    <span>42.73°N, 73.69°W · RENSSELAER COUNTY, NY</span>
+    <span class="warn-pill" id="warn-pill">CHECKING ALERTS…</span>
+  </div>
+</div>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="index.html" style="text-decoration:none;">
+      <div class="brand-mark">RC</div>
+      <div class="brand-text">
+        <div class="name">Rensselaer County Weather</div>
+        <div class="tag">INDEPENDENT FORECAST DESK</div>
+      </div>
+    </a>
+    <nav class="main">
+      <a href="index.html" class="active">Home</a>
+      <a href="warnings.html">Warnings</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section id="conditions">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Current Conditions</div>
+          <h1>Live Observation</h1>
+        </div>
+        <div class="timestamp" id="hero-updated">loading…</div>
+      </div>
+
+      <div class="panel hero-conditions" id="hero-panel">
+        <div class="hero-temp-block">
+          <div class="hero-temp" id="hero-temp">--</div>
+          <div class="hero-temp-unit">°F</div>
+        </div>
+        <div>
+          <div class="hero-meta">
+            <div class="station-name" id="hero-station">Albany, NY (KALB)</div>
+            <div class="cond-text" id="hero-cond">Loading…</div>
+          </div>
+          <div class="hero-stat-grid">
+            <div class="hero-stat"><div class="label">Wind</div><div class="value" id="hero-wind">—</div></div>
+            <div class="hero-stat"><div class="label">Humidity</div><div class="value" id="hero-humidity">—</div></div>
+            <div class="hero-stat"><div class="label">Dewpoint</div><div class="value" id="hero-dewpoint">—</div></div>
+            <div class="hero-stat"><div class="label">Pressure</div><div class="value" id="hero-pressure">—</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="regional">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Regional Snapshot</div>
+          <h2>Nearby ASOS Stations</h2>
+        </div>
+      </div>
+      <div class="station-grid" id="station-grid">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <section id="today">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Forecast</div>
+          <h2>Today</h2>
+        </div>
+        <div class="timestamp" id="today-updated"></div>
+      </div>
+      <div class="panel today-panel">
+        <p class="body-text" id="today-text">Loading forecast…</p>
+      </div>
+    </section>
+
+    <section id="weekly">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Forecast</div>
+          <h2>7-Day Outlook</h2>
+        </div>
+      </div>
+      <div class="week-grid" id="week-grid">
+        <!-- populated by JS -->
+      </div>
+    </section>
+
+    <section id="discussion">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Forecaster Discussion</div>
+          <h2>Area Forecast Discussion</h2>
+        </div>
+        <div class="timestamp" id="discussion-updated"></div>
+      </div>
+      <div class="panel bulletin">
+        <p class="body-text" id="discussion-text">Loading discussion…</p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>Rensselaer County Weather — independent forecast desk</span>
+    <span>Observations: NOAA/NWS ASOS · Not an official government product</span>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script src="js/nws.js"></script>
+<script src="js/content.js"></script>
+<script src="js/app.js"></script>
+<script>
+  function renderHero(obs) {
+    if (!obs) {
+      document.getElementById("hero-cond").textContent = "Observation unavailable";
+      document.getElementById("hero-updated").textContent = "—";
+      return;
+    }
+    document.getElementById("hero-temp").textContent = obs.tempF ?? "--";
+    document.getElementById("hero-cond").textContent = obs.condition;
+    document.getElementById("hero-wind").textContent =
+      obs.windMph != null ? `${obs.windDir} ${obs.windMph} mph` : "Calm";
+    document.getElementById("hero-humidity").textContent =
+      obs.humidity != null ? `${obs.humidity}%` : "—";
+    document.getElementById("hero-dewpoint").textContent =
+      obs.dewpointF != null ? `${obs.dewpointF}°F` : "—";
+    document.getElementById("hero-pressure").textContent =
+      obs.pressureInHg != null ? `${obs.pressureInHg} inHg` : "—";
+    document.getElementById("hero-updated").textContent = `Updated ${obs.updatedLabel}`;
+  }
+
+  function renderStationGrid(list) {
+    const grid = document.getElementById("station-grid");
+    grid.innerHTML = list.map(({ meta, obs }) => `
+      <div class="panel station-card">
+        <div class="city">${meta.name}</div>
+        ${obs ? `
+          <div class="temp">${obs.tempF ?? "--"}<span>°F</span></div>
+          <div class="cond">${obs.condition}</div>
+          <div class="sub">${obs.windDir} ${obs.windMph ?? 0} mph · ${obs.humidity ?? "—"}% RH</div>
+          <div class="sub">${obs.updatedLabel}</div>
+        ` : `<div class="cond" style="color:var(--muted-dim)">Unavailable</div>`}
+      </div>
+    `).join("");
+  }
+
+  function renderContent(data) {
+    document.getElementById("discussion-text").textContent = data.discussion || "No discussion published yet.";
+    document.getElementById("discussion-updated").textContent = `Last updated ${formatUpdated(data.updated)}`;
+    document.getElementById("today-text").textContent = data.today || "No forecast published yet.";
+    document.getElementById("today-updated").textContent = `Last updated ${formatUpdated(data.updated)}`;
+
+    const weekGrid = document.getElementById("week-grid");
+    if (Array.isArray(data.weekly) && data.weekly.length) {
+      weekGrid.innerHTML = data.weekly.map(d => `
+        <div class="panel day-card">
+          <div class="dname">${d.day || ""}</div>
+          <div class="hi">${d.high || "--"}°</div>
+          <div class="lo">${d.low || "--"}°</div>
+          <div class="dsum">${d.summary || ""}</div>
+        </div>
+      `).join("");
+    } else {
+      weekGrid.innerHTML = `<div class="panel" style="grid-column:1/-1;padding:24px;text-align:center;color:var(--muted)">7-day outlook not yet published.</div>`;
+    }
+  }
+
+  async function init() {
+    const heroObsPromise = fetchStationObservation(PRIMARY_STATION.id);
+    const regionalPromise = Promise.all(
+      REGIONAL_STATIONS.map(async (meta) => ({ meta, obs: await fetchStationObservation(meta.id) }))
+    );
+    const contentPromise = fetchPublishedContent();
+
+    renderHero(await heroObsPromise);
+    renderStationGrid(await regionalPromise);
+    renderContent(await contentPromise);
+  }
+
+  init();
+</script>
+</body>
+</html>
